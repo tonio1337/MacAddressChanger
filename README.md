@@ -12,5 +12,6 @@ This will change the adress for you.
 Few notes:
 Requires root/sudo.
 MAC resets after reboot.
+Linux based systems only.
 
 enjoy :)
