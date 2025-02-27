@@ -16,14 +16,14 @@ typedef unsigned short int int16;
 typedef unsigned int int32;
 typedef unsigned long long int int64;
 
-bool changemac(int8 *If, Mac mac);
-Mac generatorMC(void);
-
 struct s_mac {
     int64 addr:48;
 };
 
 typedef struct s_mac Mac;
+
+bool changemac(int8 *If, Mac mac);
+Mac generatorMC(void);
 
 Mac generatorMC() {
     int64 a, b;
@@ -42,9 +42,9 @@ bool changemac(int8 *If, Mac mac) {
     fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
     assert(fd > 0);
 
-    strncpy(ir.ifr_ifrn.ifrn.name, (char *)If, (IFNAMSIZ-1));
-    ir.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
-    memcpy(ir.ifr_ifru.ifru_hwaddr.sa_data, p, 6);
+    strncpy(ir.ifr_name, (char *)If, IFNAMSIZ - 1);
+    ir.ifr_hwaddr.sa_family = ARPHRD_ETHER;
+    memcpy(ir.ifr_hwaddr.sa_data, p, 6);
 
     ret = ioctl(fd, SIOCSIFHWADDR, &ir);
     close(fd);
@@ -66,6 +66,6 @@ int main(int argc, char *argv[]) {
     if (changemac(If, mac))
         printf("0x%llx\n", (long long)mac.addr);
     else
-        assert_perror(errno);
+        perror("Error");
     return 0;
 }
